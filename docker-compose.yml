@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  postgres:
+    container_name: pgsql
+    image: postgres:15.0-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev1234
+      - POSTGRES_DB=marketplace_db
+      - TZ=UTC
+  server:
+    container_name: product_server
+    build: "."
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    restart: on-failure
+    environment:
+      - FLASK_APP=main
+      - FLASK_DEBUG=True
+      - FLASK_RUN_PORT=8080
+      - PGSQL_URI=postgresql://dev:dev1234@postgres:5432/marketplace_db?sslmode=disable

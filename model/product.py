@@ -2,7 +2,6 @@ from config.database import db
 from config.marshmallow import ma
 from marshmallow import fields, validate
 
-# Define table
 class Products(db.Model):
     product_id = db.Column(db.Integer, primary_key=True)
     product_name = db.Column(db.String(128), nullable=False)
@@ -16,7 +15,6 @@ class Products(db.Model):
         self.description = description
         self.quantity = quantity
 
-# Product Schema
 class ProductSchema(ma.Schema):
     product_name = fields.Str(required=True, validate=[validate.Length(min=2, max=128)])
     price = fields.Int(required=True)

@@ -11,13 +11,9 @@ class ProductService:
         self.product_repository = ProductRepository()
         self.product_schema = ProductSchema()
         self.products_schema  = ProductSchema(many = True)
-
-    # Save a new product
     def save(self, data):
         try:
-            # Input Validation
             self.product_schema.load(data)
-            # Save a new product to database
             new_product = self.product_repository.save(data["product_name"], data["price"], data["description"], data["quantity"])
             db.session.add(new_product)
             db.session.commit()
@@ -35,12 +31,10 @@ class ProductService:
                 "errorField": err.messages
             }
             return jsonify(response_message), 400
-    # Get all products
     def find_all(self):
         products = self.product_repository.find_all()
         result = self.products_schema.dump(products)
         return jsonify(result), 200
-    # Order products based on query string parameters
     def order_by_params(self, params: str):
         if params == "asc":
             data = Products.query.order_by(asc(Products.product_name))
@@ -62,24 +56,3 @@ class ProductService:
             data = Products.query.order_by(asc(Products.price))
             res = self.products_schema.dump(data)
             return jsonify(res), 200
-
-    # if params == "asc":
-    #     data = Products.query.order_by(asc(Products.product_name))
-    #     res = products_schema.dump(data)
-    #     return jsonify(res), 200
-    # elif params == "desc":
-    #     data = Products.query.order_by(desc(Products.product_name))
-    #     res = products_schema.dump(data)
-    #     return jsonify(res), 200
-    # elif params == "latest":
-    #     data = Products.query.order_by(desc(Products.product_id))
-    #     res = products_schema.dump(data)
-    #     return jsonify(res), 200
-    # elif params == "max":
-    #     data = Products.query.order_by(desc(Products.price))
-    #     res = products_schema.dump(data)
-    #     return jsonify(res), 200
-    # elif params == "min":
-    #     data = Products.query.order_by(asc(Products.price))
-    #     res = products_schema.dump(data)
-    #     return jsonify(res), 200
